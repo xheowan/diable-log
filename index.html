@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>臉黑臉白你決定 v1.0.0</title>
+    <!-- css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style type="text/css" media="screen">
+      html { position: relative; min-height: 100%;}
+      body { margin-bottom: 60px;}
+      #footer {position: absolute;bottom: 0;width: 100%;height: 60px;background-color: #f5f5f5;}
+      .container {width: auto;max-width: 600px;padding: 0 15px;}
+      .container .text-muted {margin: 20px 0;}
+
+      @media screen and (max-device-width: 480px) {
+        .well .timer { font-size:21px; }
+        .total-count { margin-top:10px; }
+      }
+    </style>
+    <!-- js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  </head>
+  <body ng-app="diablelog" style="display:none;">
+    <div class="container" ng-controller="HomeCtrl">
+      <div class="page-header">
+        <h1>
+          臉黑臉白你決定
+          <small class="hidden-xs">打寶記錄器</small>
+        </h1>
+      </div>
+      <!--<button class="btn btn-default btn-lg" ng-click="stopTimer()"><span class="glyphicon glyphicon-stop"></span></button>-->
+      <div class="well">
+        <h2 class="text-primary timer">
+          {{ counter | timeformat }}
+          <button class="btn btn-default pull-right" ng-click="activeTimer()">
+            <span ng-if="!timerRunning" class="glyphicon glyphicon-play"></span>
+            <span ng-if="timerRunning" class="glyphicon glyphicon-pause"></span>
+          </button>
+        </h2>
+
+        <!--<timer class="text-primary" autostart="false" interval="1000">{{hours}} hours, {{minutes}} minutes, {{seconds}} seconds.</timer>-->
+      </div>
+      <div class="row">
+        <div class="col-sm-8 col-xs-12">
+          <button class="btn btn-warning" ng-click="addItem(1)">傳奇 +1 </button>
+          <button class="btn btn-success" ng-click="addItem(2)">套裝 +1</button>
+          <button class="btn btn-danger" ng-click="removeItem()">按錯了</button>
+        </div>
+        <div class="col-sm-4 col-xs-12 total-count">
+          <span class="lead text-warning" style="margin-right:14px">傳奇: {{ (items | filter: { type: 1 }).length }}</span>
+          <span class="lead text-success">套裝: {{ (items | filter: { type: 2 }).length }}</span>
+        </div>
+      </div>
+
+      <div style="margin-top:15px;">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>類型</th>
+                <th>間隔時間</th>
+                <th class="hidden-xs">取得時間</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-class="{ warning: (item.type == 1), success: (item.type == 2) }" ng-repeat="item in items | orderBy:'getTime':true">
+                <td>{{ -($index) + items.length }}</td>
+                <td>{{ item.type == 1 ? '傳奇' : '套裝' }}</td>
+                <td timeago="{{ item.spanTick }}"></td>
+                <td class="hidden-xs">{{ item.getTime | date:'HH:mm:ss' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted">@xheowan, <a href="#">github</a> </p>
+      </div>
+    </div>
+    <script src="js/app.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      angular.element(document).ready(function() {
+        angular.bootstrap(document, ['diablelog']);
+        document.getElementsByTagName('body')[0].removeAttribute('style');
+      });
+    </script>
+  </body>
+</html>
