@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>臉黑臉白你決定 v1.0.0</title>
+    <title>臉黑臉白你決定 v1.5.0</title>
     <!-- css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css" media="screen">
@@ -46,9 +46,9 @@
       </div>
       <div class="row">
         <div class="col-sm-8 col-xs-12">
-          <button class="btn btn-warning" ng-click="addItem(1)">傳奇 +1 </button>
-          <button class="btn btn-success" ng-click="addItem(2)">套裝 +1</button>
-          <button class="btn btn-danger" ng-click="removeItem()">按錯了</button>
+          <button class="btn btn-warning" ng-click="addItem(1)" ng-disabled="!timerRunning">傳奇 +1 </button>
+          <button class="btn btn-success" ng-click="addItem(2)" ng-disabled="!timerRunning">套裝 +1</button>
+          <button class="btn btn-danger" ng-click="removeItem()" ng-disabled="!timerRunning">按錯了</button>
         </div>
         <div class="col-sm-4 col-xs-12 total-count">
           <span class="lead text-warning" style="margin-right:14px">傳奇: {{ (items | filter: { type: 1 }).length }}</span>
@@ -90,7 +90,7 @@
     <script src="js/app.js"></script>
     <script type="text/javascript" charset="utf-8">
       angular.element(document).ready(function() {
-        angular.bootstrap(document, ['diablelog']);
+        //angular.bootstrap(document, ['diablelog']);
         document.getElementsByTagName('body')[0].removeAttribute('style');
       });
     </script>

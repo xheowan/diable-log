@@ -1,50 +1,38 @@
 angular.module('diablelog', [])
 .filter('timeformat', function () {
-  return function (value) {
+  return function (value, short) {
+    var span,
+        days = Math.floor(((value / (3600)) / 24)),
+        seconds = Math.floor((value) % 60),
+        minutes = Math.floor(((value / (60)) % 60)),
+        hours = Math.floor(((value / (3600)) % 24));
 
-    var seconds = Math.floor((value) % 60);
-    var minutes = Math.floor(((value / (60)) % 60));
-    var hours = Math.floor(((value / (3600)) % 24));
-    var days = Math.floor(((value / (3600)) / 24));
-
-    var span = [
-      (days > 0 ? dasy + '天' : ''),
-      ((hours >= 10 ? hours : '0' + hours) + '時'),
+    if (short) {
+      span = [
+      (days != 0 ? days + '天' : ''),
+      (hours != 0 ? hours + '小時' : ''),
+      (minutes != 0 ? minutes + '分鐘' : ''),
+      (seconds != 0 ? seconds + '秒' : '')
+      ]
+    } else {
+      span = [
+      (days > 0 ? days + '天' : ''),
+      ((hours >= 10 ? hours : '0' + hours) + '小時'),
       ((minutes >= 10 ? minutes : '0' + minutes) + '分鐘'),
       ((seconds >= 10 ? seconds : '0' + seconds) + '秒')
-    ];
+      ]
+    }
 
     return span.join(' ');
   };
 })
-.directive('timeago', function(){
+.directive('timeago', function($filter){
   return function (scope, element, attrs) {
     if (attrs.timeago) {
-      var offset = Math.abs(attrs.timeago / 1000),
-      raw = false,
-      span = [],
-      MINUTE = 60,
-      HOUR = 3600,
-      DAY = 86400,
-      WEEK = 604800,
-      MONTH = 2629744,
-      YEAR = 31556926,
-      DECADE = 315569260;
-
-      if (offset <= MINUTE) span = ['', '1分鐘以內'];
-      else if (offset < (MINUTE * 60)) span = [Math.round(Math.abs(offset / MINUTE)), '分鐘'];
-      else if (offset < (HOUR * 24)) span = [Math.round(Math.abs(offset / HOUR)), '小時'];
-      else if (offset < (DAY * 7)) span = [Math.round(Math.abs(offset / DAY)), '天'];
-      else if (offset < (WEEK * 52)) span = [Math.round(Math.abs(offset / WEEK)), '星期'];
-      else if (offset < (YEAR * 10)) span = [Math.round(Math.abs(offset / YEAR)), '年'];
-      else span = ['', '很久很久以前'];
-
-      //span[1] += (span[0] === 0 || span[0] > 1) ? 's' : '';
-      span = span.join(' ');
-
-      element.html(span);
-    };
-  };
+      //var sec = attrs.timeago / 1000;
+      element.html($filter('timeformat')(attrs.timeago, true));
+    }
+  }
 })
 .controller('HomeCtrl', ['$scope', '$timeout', function($scope, $timeout) {
   //init
@@ -87,9 +75,9 @@ angular.module('diablelog', [])
 
   //timer start and resume
   $scope.activeTimer = function (){
-    _active = true;
     if (!_active) {
       _activeTime = new Date();
+      _active = true;
     }
 
     if (!$scope.timerRunning) {
@@ -108,20 +96,18 @@ angular.module('diablelog', [])
     var new_item = {
       index: itemIndex++,
       type: type,
-      getTime: new Date()
+      getTime: new Date(),
+      spanTick: $scope.counter
     };
-
-    //計算間隔時間
-    var lastItem = $scope.items[$scope.items.length - 1];
-    var time = lastItem ? lastItem.getTime : _activeTime;
-    new_item.spanTick = new_item.getTime - time;
 
     $scope.items.push(new_item);
     resetTimer();
   };
 
   $scope.removeItem = function () {
-    $scope.items.pop();
+    if ($scope.items.length) {
+      $scope.items.pop();
+    }
   };
 
 
