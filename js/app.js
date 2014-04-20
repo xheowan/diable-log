@@ -9,9 +9,9 @@ angular.module('diablelog', [])
 
     var span = [
       (days > 0 ? dasy + '天' : ''),
-      ((hours > 10 ? hours : '0' + hours) + '時'),
-      ((minutes > 10 ? minutes : '0' + minutes) + '分鐘'),
-      ((seconds > 10 ? seconds : '0' + seconds) + '秒')
+      ((hours >= 10 ? hours : '0' + hours) + '時'),
+      ((minutes >= 10 ? minutes : '0' + minutes) + '分鐘'),
+      ((seconds >= 10 ? seconds : '0' + seconds) + '秒')
     ];
 
     return span.join(' ');
