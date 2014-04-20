@@ -36,12 +36,13 @@ angular.module('diablelog', [])
 })
 .controller('HomeCtrl', ['$scope', '$timeout', function($scope, $timeout) {
   //init
-  var _active = false, _activeTime = new Date(), itemIndex = 1, timer, pauseTime = 0;
+  var _active = false, _activeTime = new Date(), itemIndex = 1, timer, pauseTime = 0, pauseTotalTime = 0;
   $scope.timerRunning = false;
   $scope.items = [];
   $scope.item1Count = 0;
   $scope.item2Count = 0;
   $scope.counter = 0;
+  $scope.totalCounter = 0;
 
   //start timer
   function startTimer() {
@@ -49,19 +50,24 @@ angular.module('diablelog', [])
 
         if (pauseTime) {
           $scope.counter = pauseTime;
+          $scope.totalCounter = pauseTotalTime;
           pauseTime = 0;
         }
 
         $scope.counter++;
+        $scope.totalCounter++;
+
         //$scope.$apply();
         timer = $timeout(onTimeout,1000);
     }
+
     timer = $timeout(onTimeout,1000);
   }
 
   //pause timer
   function pauseTimer() {
-    stopTime = $scope.counter;
+    pauseTime = $scope.counter;
+    pauseTotalTime = $scope.totalCounter
     $timeout.cancel(timer);
   }
 
@@ -104,13 +110,14 @@ angular.module('diablelog', [])
     resetTimer();
   };
 
+  //remove item
   $scope.removeItem = function () {
     if ($scope.items.length) {
       $scope.items.pop();
     }
   };
 
-
+  //prevent window close
   window.onbeforeunload = function() {
     if (_active) {
       return '記錄器正在使用中，確定要離開嗎？';
